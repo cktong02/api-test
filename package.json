@@ -1,10 +1,11 @@
 {
     "scripts": {
-        "test": "mocha"
+        "test": "mocha test/**/*.spec.js"
     },
     "devDependencies": {
         "mocha": "^6.1.4",
         "should": "^13.2.3",
+        "sinon": "^7.3.2",
         "supertest": "^4.0.2"
     }
 }
