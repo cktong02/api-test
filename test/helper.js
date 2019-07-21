@@ -1,4 +1,5 @@
 var supertest = require("supertest");
+var should = require("should");
 var env = require("../env")
 var server = supertest.agent(env.orderEndpint);
 
@@ -41,3 +42,21 @@ exports.getLateNightTripFare = (drivingDistances) => {
         return env.frst2kmLateNightFare + Math.ceil((totalDistance - 2000) / 200) * env.every200mLateNightFare;
     }
 };
+
+exports.shouldReturnOrderNotFoundError = (testRequest, done) => {
+    testRequest.expect(404)
+        .end(function (err, res) {
+            res.status.should.equal(404);
+            res.body.message.should.equal("ORDER_NOT_FOUND");
+            done();
+        })
+}
+
+exports.shouldReturnViolatedLogicFlowError = (testRequest, expectedMessage, done) => {
+    testRequest.expect(422)
+        .end(function (err, res) {
+            res.status.should.equal(422);
+            res.body.message.should.equal(expectedMessage);
+            done();
+        });
+}
