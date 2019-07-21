@@ -10,7 +10,7 @@ describe("Order Endpoints", function () {
             it("should return order not found error", function (done) {
                 var testRequest = server.get("/orders/0");
                 helper.shouldReturnOrderNotFoundError(testRequest, done);
-            });
+            }).timeout(env.endpointTimeout.GET);
         });
 
         describe("When the order presents", function () {
@@ -31,7 +31,7 @@ describe("Order Endpoints", function () {
                             done();
                         });
                 });
-            })
+            }).timeout(env.endpointTimeout.GET);
         });
     });
 });

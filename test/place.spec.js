@@ -55,7 +55,7 @@ describe("Order Endpoints", function () {
                             Number(res.body.fare.amount).should.equal(expectedFare);
                             done();
                         });
-                });
+                }).timeout(env.endpointTimeout.POST);
             });
 
             after(() => {
@@ -92,7 +92,7 @@ describe("Order Endpoints", function () {
                         Number(res.body.fare.amount).should.equal(expectedFare);
                         done();
                     });
-            });
+            }).timeout(env.endpointTimeout.POST);
         });
 
         describe("When a past order is placed", function () {
@@ -105,7 +105,7 @@ describe("Order Endpoints", function () {
                         res.body.message.should.equal("field orderAt is behind the present time");
                         done();
                     });
-            });
+            }).timeout(env.endpointTimeout.POST);
         });
     });
 });

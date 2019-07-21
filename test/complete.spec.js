@@ -10,7 +10,7 @@ describe("Order Endpoints", function () {
             it("should return order not found error", function (done) {
                 var testRequest = server.put("/orders/0/complete");
                 helper.shouldReturnOrderNotFoundError(testRequest, done);
-            });
+            }).timeout(env.endpointTimeout.PUT);
         });
 
         describe("When an ongoing order presents", function () {
@@ -31,7 +31,7 @@ describe("Order Endpoints", function () {
                             });
                     });
                 });
-            });
+            }).timeout(env.endpointTimeout.PUT);
         });
 
         describe("When the order is not in ongoing status", function () {
@@ -43,7 +43,7 @@ describe("Order Endpoints", function () {
                     var testRequest = server.put(`/orders/${orderId}/complete`);
                     helper.shouldReturnViolatedLogicFlowError(testRequest, "Order status is not ONGOING", done);
                 });
-            });
+            }).timeout(env.endpointTimeout.PUT);
         });
     });
 });
