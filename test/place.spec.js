@@ -21,6 +21,7 @@ describe("Order Endpoints", function () {
                     server.post("/orders")
                         .send({ stops: stops })
                         .set("Accept", "application/json")
+                        .timeout(env.endpointTimeout.POST)
                         .expect(400)
                         .end(function (err, res) {
                             res.status.should.equal(400);
@@ -42,6 +43,7 @@ describe("Order Endpoints", function () {
             describe(`When an order is placed at ${type} time: ${new Date()}`, function () {
                 it(`should return new order with ${type} fare`, function (done) {
                     helper.place3StopsOrder()
+                        .timeout(env.endpointTimeout.POST)
                         .expect(201)
                         .end(function (err, res) {
                             res.status.should.equal(201);
@@ -55,7 +57,7 @@ describe("Order Endpoints", function () {
                             Number(res.body.fare.amount).should.equal(expectedFare);
                             done();
                         });
-                }).timeout(env.endpointTimeout.POST);
+                });
             });
 
             after(() => {
@@ -82,6 +84,7 @@ describe("Order Endpoints", function () {
                         }]
                     })
                     .set("Accept", "application/json")
+                    .timeout(env.endpointTimeout.POST)
                     .expect(201)
                     .end(function (err, res) {
                         res.status.should.equal(201);
@@ -92,20 +95,21 @@ describe("Order Endpoints", function () {
                         Number(res.body.fare.amount).should.equal(expectedFare);
                         done();
                     });
-            }).timeout(env.endpointTimeout.POST);
+            });
         });
 
         describe("When a past order is placed", function () {
             it("should display order time error", function (done) {
                 helper.place3StopsOrder()
                     .send({ "orderAt": "2018-09-03T13:00:00.000Z" })
+                    .timeout(env.endpointTimeout.POST)
                     .expect(400)
                     .end(function (err, res) {
                         res.status.should.equal(400);
                         res.body.message.should.equal("field orderAt is behind the present time");
                         done();
                     });
-            }).timeout(env.endpointTimeout.POST);
+            });
         });
     });
 });

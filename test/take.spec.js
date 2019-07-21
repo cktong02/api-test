@@ -8,9 +8,10 @@ describe("Order Endpoints", function () {
     describe("Take Order", function () {
         describe("When the order does not present", function () {
             it("should return order not found error", function (done) {
-                var testRequest = server.put("/orders/0/take");
+                var testRequest = server.put("/orders/0/take")
+                    .timeout(env.endpointTimeout.PUT);
                 helper.shouldReturnOrderNotFoundError(testRequest, done);
-            }).timeout(env.endpointTimeout.PUT);
+            });
         });
 
         describe("When an assigning order presents", function () {
@@ -19,6 +20,7 @@ describe("Order Endpoints", function () {
                     var orderId = res.body.id;
 
                     server.put(`/orders/${orderId}/take`)
+                        .timeout(env.endpointTimeout.PUT)
                         .expect(200)
                         .end(function (err, res) {
                             res.status.should.equal(200);
@@ -28,7 +30,7 @@ describe("Order Endpoints", function () {
                             done();
                         });
                 });
-            }).timeout(env.endpointTimeout.PUT);
+            });
         });
 
         describe("When the order is not in assigning status", function () {
@@ -38,11 +40,12 @@ describe("Order Endpoints", function () {
 
                     server.put(`/orders/${orderId}/take`).then(res => {
                         //take an ONGOING order
-                        var testRequest = server.put(`/orders/${orderId}/take`);
+                        var testRequest = server.put(`/orders/${orderId}/take`)
+                            .timeout(env.endpointTimeout.PUT);
                         helper.shouldReturnViolatedLogicFlowError(testRequest, "Order status is not ASSIGNING", done);
                     });
                 });
-            }).timeout(env.endpointTimeout.PUT);
+            });
         });
     });
 });

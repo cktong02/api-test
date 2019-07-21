@@ -8,9 +8,10 @@ describe("Order Endpoints", function () {
     describe("Fetch Order", function () {
         describe("When the order does not present", function () {
             it("should return order not found error", function (done) {
-                var testRequest = server.get("/orders/0");
+                var testRequest = server.get("/orders/0")
+                    .timeout(env.endpointTimeout.GET);
                 helper.shouldReturnOrderNotFoundError(testRequest, done);
-            }).timeout(env.endpointTimeout.GET);
+            });
         });
 
         describe("When the order presents", function () {
@@ -19,6 +20,7 @@ describe("Order Endpoints", function () {
                     var orderId = res.body.id;
 
                     server.get(`/orders/${orderId}`)
+                        .timeout(env.endpointTimeout.GET)
                         .expect(200)
                         .end(function (err, res) {
                             res.status.should.equal(200);
@@ -31,7 +33,7 @@ describe("Order Endpoints", function () {
                             done();
                         });
                 });
-            }).timeout(env.endpointTimeout.GET);
+            });
         });
     });
 });

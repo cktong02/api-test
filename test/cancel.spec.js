@@ -8,9 +8,10 @@ describe("Order Endpoints", function () {
     describe("Cancel Order", function () {
         describe("When the order does not present", function () {
             it("should return order not found error", function (done) {
-                var testRequest = server.put("/orders/0/cancel");
+                var testRequest = server.put("/orders/0/cancel")
+                    .timeout(env.endpointTimeout.PUT);
                 helper.shouldReturnOrderNotFoundError(testRequest, done);
-            }).timeout(env.endpointTimeout.PUT);
+            });
         });
 
         describe("When an assigning or ongoing order presents", function () {
@@ -19,6 +20,7 @@ describe("Order Endpoints", function () {
                     var orderId = res.body.id;
 
                     server.put(`/orders/${orderId}/cancel`)
+                        .timeout(env.endpointTimeout.PUT)
                         .expect(200)
                         .end(function (err, res) {
                             res.status.should.equal(200);
@@ -28,7 +30,7 @@ describe("Order Endpoints", function () {
                             done();
                         });
                 });
-            }).timeout(env.endpointTimeout.PUT);
+            });
         });
 
         describe("When the order is not in assigning or ongoing status", function () {
@@ -39,11 +41,12 @@ describe("Order Endpoints", function () {
 
                         server.put(`/orders/${orderId}/cancel`).then(res => {
                             //cancel a CANCELLED order again
-                            var testRequest = server.put(`/orders/${orderId}/cancel`);
+                            var testRequest = server.put(`/orders/${orderId}/cancel`)
+                                .timeout(env.endpointTimeout.PUT);
                             helper.shouldReturnViolatedLogicFlowError(testRequest, "Order status is COMPLETED already", done);
                         });
                     });
-                }).timeout(env.endpointTimeout.PUT);
+                });
             });
 
             describe("The order is COMPLETE", function () {
@@ -54,12 +57,13 @@ describe("Order Endpoints", function () {
                         server.put(`/orders/${orderId}/take`).then(res => {
                             server.put(`/orders/${orderId}/complete`).then(res => {
                                 //cancel a COMPLETED order
-                                var testRequest = server.put(`/orders/${orderId}/cancel`);
+                                var testRequest = server.put(`/orders/${orderId}/cancel`)
+                                    .timeout(env.endpointTimeout.PUT);
                                 helper.shouldReturnViolatedLogicFlowError(testRequest, "Order status is COMPLETED already", done);
                             });
                         });
                     });
-                }).timeout(env.endpointTimeout.PUT);
+                });
             });
         });
     });
