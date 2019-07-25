@@ -12,7 +12,7 @@ describe("Order Endpoints", function () {
             { description: "no stops", stops: [] },
             { description: "only one stop", stops: [{ "lat": 22.344674, "lng": 114.124651 }] },
 
-            //should fail when pickup point & destination are the same 
+            //should fail when total distance is 0m
             { description: "same start & end stops", stops: [{ "lat": 22.344674, "lng": 114.124651 }, { "lat": 22.344674, "lng": 114.124651 }] },
 
             //should fail when one of the stops is on the sea
