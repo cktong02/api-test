@@ -11,7 +11,11 @@ describe("Order Endpoints", function () {
         var invalidStops = [
             { description: "no stops", stops: [] },
             { description: "only one stop", stops: [{ "lat": 22.344674, "lng": 114.124651 }] },
+
+            //should fail when pickup point & destination are the same 
             { description: "same start & end stops", stops: [{ "lat": 22.344674, "lng": 114.124651 }, { "lat": 22.344674, "lng": 114.124651 }] },
+
+            //should fail when one of the stops is on the sea
             { description: "invalid location", stops: [{ "lat": 22.344674, "lng": 114.124651 }, { "lat": 22.290249, "lng": 114.172478 }] }
         ];
 

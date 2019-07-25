@@ -35,6 +35,7 @@ describe("Order Endpoints", function () {
 
         describe("When the order is not in assigning or ongoing status", function () {
             describe("The order is CANCELLED", function () {
+                //Cancelled orders should not be cancelled again
                 it("should return violated logic flow error", function (done) {
                     helper.place3StopsOrder().then(res => {
                         var orderId = res.body.id;
