@@ -33,16 +33,19 @@ describe("Order Endpoints", function () {
         });
 
         var orders = [
+            { type: helper.orderType.STANDARD, orderTime: null },
             { type: helper.orderType.STANDARD, orderTime: new Date(2019, 8, 1, 16, 0, 0).getTime() },
             { type: helper.orderType.LATE_NIGHT, orderTime: new Date(2019, 8, 1, 22, 0, 0).getTime() }
         ]
 
         orders.forEach(({ type, orderTime }) => {
-            clock = sinon.useFakeTimers(orderTime);
+            if (orderTime) {
+                clock = sinon.useFakeTimers(orderTime);
+            }
 
             describe(`When an order is placed at ${type} time: ${new Date()}`, function () {
                 it(`should return new order with ${type} fare`, function (done) {
-                    helper.place3StopsOrder()
+                    helper.place3StopsOrder(orderTime)
                         .timeout(env.endpointTimeout.POST)
                         .expect(201)
                         .end(function (err, res) {

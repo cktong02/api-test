@@ -8,40 +8,44 @@ exports.orderType = {
     LATE_NIGHT: "late night"
 }
 
-exports.place3StopsOrder = () =>
-    server.post("/orders")
-        .send({
-            stops: [{
-                "lat": 22.344674, "lng": 114.124651
-            },
-            {
-                "lat": 22.375384, "lng": 114.182446
-            },
-            {
-                "lat": 22.385669, "lng": 114.186962
-            }]
-        })
+exports.place3StopsOrder = (orderTime) => {
+    var input = {
+        stops: [{
+            "lat": 22.344674, "lng": 114.124651
+        },
+        {
+            "lat": 22.375384, "lng": 114.182446
+        },
+        {
+            "lat": 22.385669, "lng": 114.186962
+        }]
+    };
+
+    if (orderTime) {
+        var apiOrderTime = new Date(orderTime);
+        var offset = apiOrderTime.getTimezoneOffset() / 60;
+        apiOrderTime.setHours(apiOrderTime.getHours() - offset);
+        input.orderAt = apiOrderTime.toISOString();
+    }
+
+    return server.post("/orders")
+        .send(input)
         .set("Accept", "application/json");
+}
 
-exports.getStandardTripFare = (drivingDistances) => {
+exports.getStandardTripFare = (drivingDistances) => getTotalTripFare(drivingDistances, env.first2kmStandardFare, env.every200mStandardFare);
+
+exports.getLateNightTripFare = (drivingDistances) => getTotalTripFare(drivingDistances, env.first2kmLateNightFare, env.every200mLateNightFare);
+
+function getTotalTripFare(drivingDistances, first2kmFare, every200mFare) {
     var totalDistance = drivingDistances.reduce((a, b) => a + b, 0);
     if (drivingDistances <= 2000) {
-        return env.frst2kmStandardFare;
+        return first2kmFare;
     }
     else {
-        return env.frst2kmStandardFare + Math.ceil((totalDistance - 2000) / 200) * env.every200mStandardFare;
+        return Number((first2kmFare + (totalDistance - 2000) / 200 * every200mFare).toFixed(2));
     }
-};
-
-exports.getLateNightTripFare = (drivingDistances) => {
-    var totalDistance = drivingDistances.reduce((a, b) => a + b, 0);
-    if (drivingDistances <= 2000) {
-        return env.frst2kmLateNightFare;
-    }
-    else {
-        return env.frst2kmLateNightFare + Math.ceil((totalDistance - 2000) / 200) * env.every200mLateNightFare;
-    }
-};
+}
 
 exports.shouldReturnOrderNotFoundError = (testRequest, done) => {
     testRequest.expect(404)
